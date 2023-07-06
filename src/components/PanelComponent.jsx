@@ -23,17 +23,18 @@ const PanelComponent = ({
 
   const handleClickCategories = (event) => {
     event.preventDefault();
-    // console.log(event.target.text);
-    const copyCategories = Object.assign([], selectedCategories);
+    let copyCategories = Object.assign([], selectedCategories);
 
     if (!copyCategories.includes(event.target.text)) {
       copyCategories.push(event.target.text);
+    } else {
+      copyCategories = copyCategories.filter(category => (
+        category !== event.target.text
+      ));
     }
 
     setSelectedCategories(copyCategories);
   };
-  // console.log(selectedCategories);
-  // console.log(selectedUsers);
 
   return (
     <div className="block">
@@ -139,6 +140,7 @@ const PanelComponent = ({
             onClick={() => {
               setSelectedCategories([]);
               setSelectedUsers([]);
+              setSearchQuery('');
             }}
           >
             Reset all filters

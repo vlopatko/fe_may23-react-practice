@@ -24,19 +24,19 @@ const SortTitlecomponent = ({
                 key={title}
               />
             )}
-            {sort[0] === title && sort[1] === 'up' && (
-              <i
-                data-cy="SortIcon"
-                className="fas fa-sort-down"
-                onClick={event => setSort([title, 'down'])}
-                key={title}
-              />
-            )}
             {sort[0] === title && sort[1] === 'down' && (
               <i
                 data-cy="SortIcon"
-                className="fas fa-sort-up"
+                className="fas fa-sort-down"
                 onClick={event => setSort([])}
+                key={title}
+              />
+            )}
+            {sort[0] === title && sort[1] === 'up' && (
+              <i
+                data-cy="SortIcon"
+                className="fas fa-sort-up"
+                onClick={event => setSort([title, 'down'])}
                 key={title}
               />
             )}
