@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
+import SortTitlecomponent from './SortTitlecomponent';
 
 const TableComponent = ({
   products,
@@ -8,24 +9,62 @@ const TableComponent = ({
   selectedCategories,
   searchQuery,
 }) => {
+  const [sort, setSort] = useState([]);
+
   const getPreparedProducts = (
     allProducts,
     users,
     categories,
+    sorting,
+    query,
   ) => {
-    // const copyProducts = Object.assign([], allProducts);
-    let copyProducts = [...allProducts];
+    let copyProducts = Object.assign([], allProducts);
 
     if (categories.length > 0) {
       copyProducts = copyProducts.filter(product => (
-        categories.join('-').includes(product.category.title)
+        categories.includes(product.category.title)
       ));
     }
 
     if (users.length > 0) {
       copyProducts = copyProducts.filter(product => (
-        users.join('-').includes(product.user.name)
+        users.includes(product.user.name)
       ));
+    }
+
+    if (query.length > 0) {
+      copyProducts = copyProducts.filter(product => (
+        product.name.toLowerCase().includes(query.toLowerCase())
+      ));
+    }
+
+    if (sorting.length > 0) {
+      switch (sort[0]) {
+        case 'ID':
+          copyProducts.sort((a, b) => (
+            sort[1] === 'up' ? a.id - b.id : b.id - a.id
+          ));
+          break;
+        case 'Product':
+          copyProducts.sort((a, b) => (sort[1] === 'up'
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name)
+          ));
+          break;
+        case 'Category':
+          copyProducts.sort((a, b) => (sort[1] === 'up'
+            ? a.category.title.localeCompare(b.category.title)
+            : b.category.title.localeCompare(a.category.title)
+          ));
+          break;
+        case 'User':
+          copyProducts.sort((a, b) => (sort[1] === 'up'
+            ? a.user.name.localeCompare(b.user.name)
+            : b.user.name.localeCompare(a.user.name)
+          ));
+          break;
+        default: return 0;
+      }
     }
 
     return copyProducts;
@@ -35,6 +74,8 @@ const TableComponent = ({
     products,
     selectedUsers,
     selectedCategories,
+    sort,
+    searchQuery,
   );
 
   return (
@@ -47,53 +88,11 @@ const TableComponent = ({
           >
             <thead>
               <tr>
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    ID
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    Product
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort-down" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    Category
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort-up" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    User
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
+                <SortTitlecomponent
+                  visibleProducts={visibleProducts}
+                  sort={sort}
+                  setSort={setSort}
+                />
               </tr>
             </thead>
 
