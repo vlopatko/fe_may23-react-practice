@@ -8,10 +8,32 @@ const PanelComponent = ({
   setSelectedUsers,
   selectedCategories,
   setSelectedCategories,
+  searchQuery,
+  setSearchQuery,
 }) => {
-  const handleClickUser = () => { };
+  const handleClickUser = (event) => {
+    const copyUsers = Object.assign([], selectedUsers);
 
-  const handleClickCategories = () => { };
+    if (!copyUsers.includes(event.target.text)) {
+      copyUsers.push(event.target.text);
+    }
+
+    setSelectedUsers(copyUsers);
+  };
+
+  const handleClickCategories = (event) => {
+    event.preventDefault();
+    // console.log(event.target.text);
+    const copyCategories = Object.assign([], selectedCategories);
+
+    if (!copyCategories.includes(event.target.text)) {
+      copyCategories.push(event.target.text);
+    }
+
+    setSelectedCategories(copyCategories);
+  };
+  // console.log(selectedCategories);
+  // console.log(selectedUsers);
 
   return (
     <div className="block">
@@ -20,10 +42,12 @@ const PanelComponent = ({
 
         <p className="panel-tabs has-text-weight-bold">
           <a
+            className={cn(
+              { 'is-active': selectedUsers.length === 0 },
+            )}
             data-cy="FilterAllUsers"
             href="#/"
             onClick={() => {
-              setSelectedCategories([]);
               setSelectedUsers([]);
             }}
           >
@@ -31,6 +55,9 @@ const PanelComponent = ({
           </a>
           {users.map(user => (
             <a
+              className={cn(
+                { 'is-active': selectedUsers.includes(user.name) },
+              )}
               data-cy="FilterUser"
               href="#/"
               key={user.name}
@@ -48,21 +75,29 @@ const PanelComponent = ({
               type="search"
               className="input"
               placeholder="Search"
-              value=""
+              value={searchQuery}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+              }}
             />
 
             <span className="icon is-left">
               <i className="fas fa-search" aria-hidden="true" />
             </span>
-
-            <span className="icon is-right">
-              {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-              <button
-                data-cy="ClearButton"
-                type="button"
-                className="delete"
-              />
-            </span>
+            {searchQuery.length > 0
+              && (
+                <span className="icon is-right">
+                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                    }}
+                    data-cy="ClearButton"
+                    type="button"
+                    className="delete"
+                  />
+                </span>
+              )}
           </p>
         </div>
 
@@ -70,7 +105,13 @@ const PanelComponent = ({
           <a
             href="#/"
             data-cy="AllCategories"
-            className="button is-success mr-6 is-outlined"
+            className={cn(
+              'button mr-6 is-success',
+              { 'is-outlined': selectedCategories.length !== 0 },
+            )}
+            onClick={() => {
+              setSelectedCategories([]);
+            }}
           >
             All
           </a>
@@ -79,7 +120,7 @@ const PanelComponent = ({
               data-cy="Category"
               className={cn(
                 'button mr-2 my-1',
-                { 'is-info': false },
+                { 'is-info': selectedCategories.includes(category.title) },
               )}
               href="#/"
               key={category.title}
@@ -95,6 +136,10 @@ const PanelComponent = ({
             data-cy="ResetAllButton"
             href="#/"
             className="button is-link is-outlined is-fullwidth"
+            onClick={() => {
+              setSelectedCategories([]);
+              setSelectedUsers([]);
+            }}
           >
             Reset all filters
           </a>

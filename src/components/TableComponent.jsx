@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
+import cn from 'classnames';
 
 const TableComponent = ({
   products,
   selectedUsers,
-  setSelectedUsers,
   selectedCategories,
-  setSelectedCategories,
+  searchQuery,
 }) => {
   const getPreparedProducts = (
     allProducts,
@@ -14,7 +14,19 @@ const TableComponent = ({
     categories,
   ) => {
     // const copyProducts = Object.assign([], allProducts);
-    const copyProducts = [...allProducts];
+    let copyProducts = [...allProducts];
+
+    if (categories.length > 0) {
+      copyProducts = copyProducts.filter(product => (
+        categories.join('-').includes(product.category.title)
+      ));
+    }
+
+    if (users.length > 0) {
+      copyProducts = copyProducts.filter(product => (
+        users.join('-').includes(product.user.name)
+      ));
+    }
 
     return copyProducts;
   };
@@ -99,7 +111,10 @@ const TableComponent = ({
 
                   <td
                     data-cy="ProductUser"
-                    className="has-text-link"
+                    className={cn(
+                      { 'has-text-link': product.user.sex === 'm' },
+                      { 'has-text-danger': product.user.sex === 'f' },
+                    )}
                   >
                     {product.user.name}
                   </td>

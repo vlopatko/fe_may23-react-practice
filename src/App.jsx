@@ -11,6 +11,7 @@ import TableComponent from './components/TableComponent';
 export const App = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const products = productsFromServer.map((product) => {
     const correctCategory = categoriesFromServer.find(category => (
@@ -38,13 +39,14 @@ export const App = () => {
           setSelectedUsers={setSelectedUsers}
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
         <TableComponent
           products={products}
           selectedUsers={selectedUsers}
-          setSelectedUsers={setSelectedUsers}
           selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
+          searchQuery={searchQuery}
         />
       </div>
     </div>
